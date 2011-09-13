@@ -11,9 +11,9 @@ grails install-plugin alfresco-grails //TODO provide definitive link, this one d
 
 After installation you can create an alfresco server connector on http://host:port/myapp/alfrescoServer
 
-As soon as done, you can use the tag lib '''<alfresco:homeTree node="workspace://SpaceNodes/your-node-here">''' to render the folders and documents inside the node
+As soon as done, you can use the tag lib `<alfresco:homeTree node="workspace://SpaceNodes/your-node-here">` to render the folders and documents inside the node
 
-you can use also '''<alfresco:spaceTree node="">'''
+you can use also `<alfresco:spaceTree node="">`
 
 # CSS Considerations
 
