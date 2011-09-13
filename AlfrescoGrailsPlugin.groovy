@@ -9,15 +9,15 @@ def dependsOn = [:]
 // resources that are excluded from plugin packaging
 def pluginExcludes = [
 "grails-app/views/error.gsp",
-"grails-app/controllers/TestController.groovy",
 "grails-app/views/test/**"
 ]
 
-def author = "INECO-TIFSA"
-def authorEmail = "sgom@ineco.es"
+def author = "INECO-TIFSA, Francois-Xavier Thoorens"
+def authorEmail = "fx.thoorens@gmail.com"
 def title = "Plugin to integrate alfresco 3.4 into your grails application"
 def description = '''\\
 Integrate Alfresco in your grails Application. You need to install RAAr package to your alfresco server in order to expose the cma API the plugin use.
+It is based on the original alfresco grails plugin, but considerably updated to work with alfresco 3.4
 '''
 
     // URL to the plugin's documentation

@@ -1,9 +1,10 @@
 <plugin name='alfresco' version='0.5' grailsVersion='1.3 &gt; *'>
-  <author>INECO-TIFSA</author>
-  <authorEmail>sgom@ineco.es</authorEmail>
+  <author>INECO-TIFSA, Francois-Xavier Thoorens</author>
+  <authorEmail>fx.thoorens@gmail.com</authorEmail>
   <title>Plugin to integrate alfresco 3.4 into your grails application</title>
   <description>\
 Integrate Alfresco in your grails Application. You need to install RAAr package to your alfresco server in order to expose the cma API the plugin use.
+It is based on the original alfresco grails plugin, but considerably updated to work with alfresco 3.4
 </description>
   <documentation>https://github.com/fix/grails-alfresco-plugin</documentation>
   <resources>
