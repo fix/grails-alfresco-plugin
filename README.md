@@ -4,21 +4,28 @@ Also i commit to sustain the plugin until the end of my project (middle 2012). A
 
 As of now, the plugin as committed does not work. I am doing the necessary modifications to have it working out of the scope of my project. Stay tuned.
 
-# Introduction
-
+## Introduction
 In order to install the plugin do
 grails install-plugin alfresco-grails //TODO provide definitive link, this one does not work yet
 
-After installation you can create an alfresco server connector on http://host:port/myapp/alfrescoServer
+After installation you can create an alfresco server connector on http://host:port/myapp/alfrescoServer.
 
-As soon as done, you can use the tag lib `<alfresco:homeTree node="workspace://SpaceNodes/your-node-here">` to render the folders and documents inside the node
+As soon as done, you can use the tag lib `<alfresco:homeTree node="workspace://StoresSpace/your-node">` to render the folders and documents inside the node `your-node`.
 
-you can use also `<alfresco:spaceTree node="">`
+you can use also `<alfresco:spaceTree user="the_username">` to render personal repoitory of `the_username`.
 
-# CSS Considerations
+## CSS Considerations
+There are 3 classes in order to customize tree styling:
 
+* `<li class="file">` rendering a file in the tree
+* `<li class="closedNode">` rendering a closed folder in the tree
+* `<li class="openNode">` rendering an open folder in the tree
+
+## Workflows
 TODO
 
-# Workflows
-
-TODO
+## Roadmap
+* Move AlfrescoServer to a non static context, to allow several instances concurrently
+* Create a default css to style the tree (using famfamfam plugin)
+* Separate rendering of the Workflow from the Tree
+* Create a document view/taglib
