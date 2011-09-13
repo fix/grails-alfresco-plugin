@@ -16,9 +16,9 @@ The plugin is using Remote Alfresco API rivet (http://wiki.rivetlogic.com/displa
     java -jar alfresco-mgt.jar install cma-alfresco-your_version.amp
     
 After installation you can create an alfresco server connector on http://host:port/myapp/alfrescoServer.
-As soon as done, you can use the tag lib `<alfresco:homeTree node="workspace://StoresSpace/your-node">` to render the folders and documents inside the node `your-node`.
+As soon as done, you can use the tag lib `<alfresco:spaceTree node="workspace://StoresSpace/your-node">` to render the folders and documents inside the node `your-node`.
 
-you can use also `<alfresco:spaceTree user="the_username">` to render personal repoitory of `the_username`.
+you can use also `<alfresco:homeTree user="the_username">` to render personal repoitory of `the_username`.
 
 ## CSS Considerations
 There are 3 classes in order to customize tree styling:
