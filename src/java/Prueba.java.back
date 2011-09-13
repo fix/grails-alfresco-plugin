@@ -1,0 +1,191 @@
+
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.namespace.QName;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.rivetlogic.core.cma.api.SearchService;
+import com.rivetlogic.core.cma.api.SecurityService;
+import com.rivetlogic.core.cma.exception.AuthenticationFailure;
+import com.rivetlogic.core.cma.exception.AuthorityExistsException;
+import com.rivetlogic.core.cma.exception.CmaRuntimeException;
+import com.rivetlogic.core.cma.exception.InvalidTicketException;
+import com.rivetlogic.core.cma.impl.AuthenticationServiceImpl;
+import com.rivetlogic.core.cma.impl.ContentServiceImpl;
+import com.rivetlogic.core.cma.impl.NodeServiceImpl;
+import com.rivetlogic.core.cma.impl.PeopleServiceImpl;
+import com.rivetlogic.core.cma.impl.SearchServiceImpl;
+import com.rivetlogic.core.cma.repo.Node;
+import com.rivetlogic.core.cma.repo.SortDefinition;
+import com.rivetlogic.core.cma.repo.Ticket;
+
+/**
+ *
+ * @author Praveen C Elineni
+ * @Rivet
+ *
+ */
+public class Prueba {
+
+    private static final String APPLICATION_CONTEXT = "classpath*:core/cma-core-context.xml";
+
+    public static void main(String[] args) {
+        ConfigurableApplicationContext configurationApplicationContext = null;
+        AuthenticationServiceImpl authenticationService = null;
+        SearchServiceImpl searchService = null;
+        ContentServiceImpl contentService = null;
+        PeopleServiceImpl peopleService = null;
+        NodeServiceImpl nodeService = null;
+        Ticket ticket = null;
+
+        QName name = QName.createQName("{http://www.alfresco.org/model/content/1.0}name");
+        QName created = QName.createQName("{http://www.alfresco.org/model/content/1.0}created");
+
+        List<QName> properties = new Vector<QName>();
+        properties.add(name);
+        properties.add(created);
+
+        List<String> requiredPermissions = new ArrayList<String>(4);
+        requiredPermissions.add(SecurityService.READ_CONTENT);
+        requiredPermissions.add(SecurityService.WRITE_CONTENT);
+        requiredPermissions.add(SecurityService.WRITE_PROPERTIES);
+        requiredPermissions.add(SecurityService.DELETE);
+
+        QName nodeTypeQName = QName.createQName("{http://www.alfresco.org/model/content/1.0}content");
+
+        String spacesStore = "workspace://SpacesStore";
+        String repositoryUri = "http://localhost:8080/alfresco/service";
+        String password = "admin";
+        String userid = "admin";
+        String fileName = "/tmp/rivetlogic.txt";
+        String data;
+
+        // variables for user / group creation
+        String groupName = "RivetGroup";
+        String userName = "rivet";
+        String passwd = "rivet";
+        String firstName = "Rivet";
+        String lastName = "Logic";
+
+        QName firstNameQName = QName.createQName("{http://www.alfresco.org/model/content/1.0}firstName");
+        QName lastNameQName = QName.createQName("{http://www.alfresco.org/model/content/1.0}lastName");
+
+        Map<QName, Serializable> props = null;
+        props = new HashMap<QName, Serializable>(4);
+        // homeFolder value must be a nodeRef
+        props.put(firstNameQName, firstName);
+        props.put(lastNameQName, lastName);
+
+        configurationApplicationContext = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT);
+
+        authenticationService = (AuthenticationServiceImpl) configurationApplicationContext.getBean("authenticationService");
+        searchService = (SearchServiceImpl) configurationApplicationContext.getBean("searchService");
+        contentService = (ContentServiceImpl) configurationApplicationContext.getBean("contentService");
+        peopleService = (PeopleServiceImpl) configurationApplicationContext.getBean("peopleService");
+        nodeService = (NodeServiceImpl)configurationApplicationContext.getBean("nodeService");
+
+        List<SortDefinition> sortDefinitions = new Vector<SortDefinition>();
+        sortDefinitions.add(new SortDefinition(SortDefinition.SortType.FIELD, "@{http://www.alfresco.org/model/content/1.0}name", false));
+
+        try {
+            // Validate userid and password
+            ticket = authenticationService.authenticate(repositoryUri, userid, password.toCharArray());
+
+            /*		old search - deprecated in new release
+             *
+             * 		List<Node> nodes = searchService.query(ticket, new StoreRef(spacesStore),
+             *			SearchService.QueryLanguage.lucene, "@cm\\:name:\"javaapi\"", true, true, true, true, true, 1, 100, sortDefinitions);
+             *
+             */
+
+            // search for file with name "rivetlogic"
+            List<Node> nodes = searchService.query(ticket, new StoreRef(spacesStore), SearchService.QueryLanguage.lucene, "@cm\\:name:\"rivetlogic\"",
+                    properties, true, true, true, true, requiredPermissions, 100, sortDefinitions);
+
+            if (nodes != null) {
+                // file found
+                for (Node node : nodes) {
+                    System.out.println("node: " + node);
+                    NodeRef nodeRef = node.getNodeRef();
+
+                    // get data from user
+                    System.out.println("Enter content to put in the file: ");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                    data = br.readLine();
+                    br.close();
+
+                    // write content to the file
+                    InputStream input = new ByteArrayInputStream(data.getBytes("UTF-8"));
+                    contentService.writeContentFromStream(ticket, nodeRef, nodeTypeQName, input);
+                    input.close();
+                    System.out.println("Data has been written into the file /CompanyHome/rivetlogic.txt");
+
+                    // open file and read data and dump it into fileName file. - "/tmp/javaapi.txt"
+                    FileOutputStream output = new FileOutputStream(fileName);
+                    contentService.readContentIntoStream(ticket, nodeRef, nodeTypeQName, output);
+                    output.close();
+                    System.out.println("Reading data from the file");
+
+                    // dump data on screen
+                    InputStream file = new FileInputStream(fileName);
+                    br = new BufferedReader(new InputStreamReader(file));
+                    String str;
+                    System.out.println("Content of file (/CompanyHome/rivetlogic.txt) is: ");
+                    while ((str = br.readLine()) != null) {
+                        System.out.println(str);
+                    }
+                    br.close();
+                    file.close();
+                }
+            }
+
+            // create user group in alfresco
+
+            System.out.println("Creating the group called RivetGroup");
+            NodeRef userGroup = peopleService.createGroup(ticket, groupName);
+
+            System.out.println("Creating the user called Rivet Logic");
+            NodeRef userRef = peopleService.createPerson(ticket, userName, passwd.toCharArray(), props);
+
+            // add user to the group created
+            System.out.println("Adding RivetLogic to RivetGroup");
+            peopleService.addAuthority(ticket, userGroup, userRef);
+
+            // logout - invalidate ticket
+            System.out.println("logging out. invalidating session.");
+            authenticationService.invalidateTicket(ticket);
+
+        } catch (AuthenticationFailure e) {
+            e.printStackTrace();
+        } catch (InvalidTicketException e) {
+            e.printStackTrace();
+        } catch (CmaRuntimeException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (AuthorityExistsException e) {
+            e.printStackTrace();
+        }
+    }
+}
