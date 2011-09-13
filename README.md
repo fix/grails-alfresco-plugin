@@ -8,8 +8,14 @@ As of now, the plugin as committed does not work. I am doing the necessary modif
 In order to install the plugin do
 grails install-plugin alfresco-grails //TODO provide definitive link, this one does not work yet
 
-After installation you can create an alfresco server connector on http://host:port/myapp/alfrescoServer.
+## Alfresco server configuration
+The plugin is using Remote Alfresco API rivet (http://wiki.rivetlogic.com/display/RAAR/Home) to communicate with Alfresco. To enable it on your Alfresco, you need to deploy the amp file downloaded from here: http://wiki.rivetlogic.com/display/RAAR/Downloads. Choose the version according to your server installation (Community or Enterprise).
 
+`cd /path/to/alfresco/bin`
+
+`java -jar alfresco-mgt.jar install cma-alfresco-your_version.amp`
+
+After installation you can create an alfresco server connector on http://host:port/myapp/alfrescoServer.
 As soon as done, you can use the tag lib `<alfresco:homeTree node="workspace://StoresSpace/your-node">` to render the folders and documents inside the node `your-node`.
 
 you can use also `<alfresco:spaceTree user="the_username">` to render personal repoitory of `the_username`.
