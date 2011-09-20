@@ -12,15 +12,16 @@ class AlfrescoConnectionService {
      */
     def getDefaultServer() {
         if(!currentInstance){
-            //Buscamos el primer servidor online, ordenados por peso asc.
-            currentInstance = AlfrescoServer.findByOnline(
-                true,
-                [sort:'weight',order:'asc']
-            )
+            //Look for the first server that is defined online
+            currentInstance = AlfrescoServer.findByOnline(true)
             println("Starting alfresco server: ${currentInstance}")
         }
         return currentInstance
     }
+	
+	def getServer(String servername, String username) {
+		return AlfrescoServer.findByUsernameAndName(username, servername)
+	}
 
 }
 

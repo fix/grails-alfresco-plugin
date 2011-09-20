@@ -1,3 +1,4 @@
 .settings
 target/
 web-app/WEB-INF/classes/
+grails-app/i18n/

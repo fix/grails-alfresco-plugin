@@ -11,43 +11,53 @@ class AlfrescoTagLib {
 
     /**
      *
-     * Genera un árbol con el contenido de la carpeta seleccionada.
+     * Render a tree from the specified node
      */
     def spaceTree = {attrs, body ->
-        //1. Validar entrada
+        //Validation
         def parentID = attrs.node
-        def cssClass = attrs.cssClass
+		def serverName = attrs.servername
+		def userName = attrs.username
 
         if(!parentID){
-            out << "<div class='error'>Falta el id de la carpeta a mostrar.</div>"
+            out << "<div class='error'>Property \"node\" is not set.</div>"
             return
         }
-        if(!cssClass){
-            out << "<div class='error'>Falta el estilo css para el contenedor</div>"
-            return
-        }
+		
+		if(!userName){
+			out << "<div class='error'>Needs a property \"username\"</div>"
+			return
+		}
+		
+		if(!serverName){
+			out << "<div class='error'>Needs a property \"servername\"</div>"
+			return
+		}
 
-        //2. Si no existe la lista de nodos abiertos la creamos.
-        if(!session.openNodes){
-            session.openNodes = []
-        }
+		
+		//Check if the session contains already a node list, other create an empty one
+		if(!session.spaceNodes){
+			session.spaceNodes = []
+		}
 
-        //3. Abrimos o cerramos los nodos solicitados.
-        if(params.openNode && !session.openNodes.contains(params.openNode))
-        session.openNodes<<params.openNode
+		//Open the requested node
+		if(params.openNode && !session.spaceNodes.contains(params.openNode))
+		session.spaceNodes<<params.openNode
 
-        if(params.closeNode) session.openNodes.remove(params.closeNode)
+		if(params.closeNode) session.spaceNodes.remove(params.closeNode)
 
-        def baseURL= request.requestURL.toString()
+		def baseURL= request.requestURL.toString()
 
-        //4. Cargamos los datos desde Alfresco
-        def ticket = alfrescoUsersService.openSession()        
+		//Get the data from the alfresco server
+		def ticket = alfrescoUsersService.getTicket(serverName, userName)
         def fList = alfrescoUsersService.getFolders(ticket,parentID)
-        out << "<div  class='${cssClass}'>"
+
+		
+		//Render the tree
         out << "<ul>"
         fList.each {
             //5. Para cada carpeta, invocamos la función recursiva.
-            showFld(ticket,it, baseURL)
+            showFld(session.spaceNodes, ticket,it, baseURL)
         }
         def files = alfrescoUsersService.getFiles(ticket,parentID)
         //Usamos ord para generar ids unicos en los formularios.
@@ -56,49 +66,49 @@ class AlfrescoTagLib {
             showFile(ticket,it,baseURL, ++ord)
         }
         out << "</ul>"
-        out << "</div>"
-        //alfrescoUsersService.closeSession(ticket)
     }
 
     /*
      *Genera una lista con el contenido de la carpeta del usuario.
      */
     def homeTree = {attrs, body ->
-        //1. Validar entrada
+        // Validate
         def userName = attrs.user
-        def cssClass = attrs.cssClass
+		def serverName = attrs.servername
 
         if(!userName){
-            out << "<div class='error'>Falta el nombre de usuario</div>"
+            out << "<div class='error'>Needs a property \"user\"</div>"
             return
         }
-        if(!cssClass){
-            out << "<div class='error'>Falta el estilo css para el contenedor</div>"
-            return
+		
+		if(!serverName){
+			out << "<div class='error'>Needs a property \"servername\"</div>"
+			return
+		}
+
+        //Check if the session contains already a node list, other create an empty one
+        if(!session.homeNodes){
+            session.homeNodes = []
         }
 
-        //2. Si no existe la lista de nodos abiertos la creamos.
-        if(!session.openNodes){
-            session.openNodes = []
-        }
+        //Open the requested node
+        if(params.openNode && !session.homeNodes.contains(params.openNode))
+        session.homeNodes<<params.openNode
 
-        //3. Abrimos o cerramos los nodos solicitados.
-        if(params.openNode && !session.openNodes.contains(params.openNode))
-        session.openNodes<<params.openNode
-
-        if(params.closeNode) session.openNodes.remove(params.closeNode)
+        if(params.closeNode) session.homeNodes.remove(params.closeNode)
 
         def baseURL= request.requestURL.toString()        
 
-        //4. Cargamos los datos desde Alfresco
-        def ticket = alfrescoUsersService.openSession()
+        //Get the data from the alfresco server
+        def ticket = alfrescoUsersService.getTicket(serverName, userName)
         def homeFolder = alfrescoUsersService.getUserHome(ticket,userName).toString()
         def fList = alfrescoUsersService.getFolders(ticket,homeFolder)
-        out << "<div  class='${cssClass}'>"        
-        out << "<ul>"
+        
+		//Start rendering the whole stuff
+		out << "<ul>"
         fList.each {
-            //5. Para cada carpeta, invocamos la función recursiva.
-            showFld(ticket,it, baseURL)
+            //5. Recursively render folders
+            showFld(session.homeNodes,ticket,it, baseURL)
         }
         def files = alfrescoUsersService.getFiles(ticket,homeFolder)
         def ord = System.currentTimeMillis()
@@ -106,23 +116,21 @@ class AlfrescoTagLib {
             showFile(ticket,it,baseURL,++ord)
         }
         out << "</ul>"
-        out << "</div>"
-        //alfrescoUsersService.closeSession(ticket)
     }
 
     /**
     Función recursiva para mostrar los nodos del árbol.
      **/
-    private showFld(ticket, node, baseURL){
+    private showFld(nodes,ticket, node, baseURL){
     	//println node
         def actions = buildActions(ticket,node)
         def urlSepChar = baseURL.contains('?')?'&':'?'
-        if(session.openNodes.contains(node.id.toString())){
+        if(nodes.contains(node.id.toString())){
             out << "<li class='openNode'><a href='${baseURL}${urlSepChar}closeNode=${node.id.encodeAsURL()}' title='${node.name}'>${node.name} ${actions}</a>"
             out << "<ul>"
             def subFlds = alfrescoUsersService.getFolders(ticket,node.id)
             subFlds.each{
-                showFld(ticket,it, baseURL)
+                showFld(nodes,ticket,it, baseURL)
             }
             def files = alfrescoUsersService.getFiles(ticket,node.id)
             def ord = System.currentTimeMillis()

@@ -1,3 +1,5 @@
+import com.rivetlogic.core.cma.api.AuthenticationService;
+
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
@@ -37,37 +39,51 @@ class AlfrescoUsersService {
     boolean transactional = true
 
     /**
-    Inicia sesión como admin y devuelve el ticket.
+    /* Start a session trying to reuse an existing ticket. If not present or invalid, create a new one.
      **/
-    Ticket openSession() {
-        def alf = alfrescoConnectionService.getDefaultServer()
-        def usr = alf.adminUsername
-        def pwd = alf.adminPassword
-        def ticket = openSession(usr,pwd)
+    Ticket getTicket(String servername, String username) {
+        def alf = alfrescoConnectionService.getServer(servername, username)
+		println alf
+		def ticket=null;
+		if(alf.ticket){
+			ticket = AlfrescoUtils.unSerializeTicket(alf.ticket)
+			//check if ticket is valid
+			try{
+				authenticationService.validate(ticket)
+			}
+			catch(Exception e){
+				//Ticket not valid then we will create and save a new one
+				ticket=null
+			}
+		}
+        if(!ticket) {
+			ticket = openSession(alf)
+			alf.ticket=AlfrescoUtils.serializeTicket(ticket);
+			alf.save()
+        }
+		
+		return ticket
     }
 
     /**
-    Inicia sesión como y devuelve el ticket.
+    /* Start a session and open a ticket
      **/
-    Ticket openSession(usr, pwd) {
-        //println "Iniciando sesión como $usr/$pwd"
-        def alf = alfrescoConnectionService.getDefaultServer()
+    Ticket openSession(AlfrescoServer alf) {
         def url = "${alf.serverUrl}/alfresco/service"
-
-        def ticket = authenticationService.authenticate(url, usr, pwd.toCharArray());
+        def ticket = authenticationService.authenticate(url, alf.username, alf.password.toCharArray());
 
     }
 
     /**
-    Cierra la sesión identificada por el ticket proporionado.
+    /* Close the session releasing the ticket
      **/
-    String closeSession(ticket){
+    String closeTicket(ticket){
         authenticationService.invalidateTicket(ticket);
         'ok'
     }
 
     /**
-     * Devuelve el ID de la carpeta del usuario. p.ej:
+     * find the id of the user home, for instance:
      * workspace://SpacesStore/c9fe7d30-d017-41bc-bedc-2d104be20ed3
      **/
     def getUserHome(ticket,userName){
@@ -124,7 +140,7 @@ ID:"${userID}"
         return nodeList[0]
     }
 
-    def tamanoContenido(ticket, oNodeRef){
+    def sizeOfNode(ticket, oNodeRef){
         ContentData contentData = (ContentData)nodeService.getProperty(ticket, oNodeRef, ContentModel.PROP_CONTENT);
         if (contentData != null && contentData.size > 0){
             return contentData.size
@@ -132,12 +148,12 @@ ID:"${userID}"
         return 0
     }
 
-    def moverNodo(ticket,originalNodeID,destinationContainerID){
+    def moveNode(ticket,originalNodeID,destinationContainerID){
         nodeService.moveNode(ticket,new NodeRef(originalNodeID),new NodeRef(destinationContainerID));
     }
 
 
-    def descripcionNodo(ticket, oNodeRef){
+    def describeNode(ticket, oNodeRef){
         def description = nodeService.getProperty(ticket, oNodeRef, ContentModel.PROP_DESCRIPTION);
         return description
     }
@@ -148,15 +164,10 @@ ID:"${userID}"
         return getChildren(ticket,parentFolderID,["{http://www.alfresco.org/model/content/1.0}content"])
     }
 
-    /**
-     *
-     **/
     def getFolders(ticket,parentFolderID){
         return getChildren(ticket,parentFolderID,["{http://www.alfresco.org/model/content/1.0}folder"])
     }
-    /**
-     *
-     **/
+	
     def getChildren(ticket,parentFolderID,types){
         def maxResults = 100
         def query = "PARENT:\"${parentFolderID}\""
@@ -267,13 +278,10 @@ ID:"${userID}"
 
         nodeService.setProperties(ticket,nodeRef,props)
     }
-    /**
-     * Crea la carpeta con el nombre y la descripción proporcionados,
-     * en el nodo indicado por parentNodeRef
-     *
-     */
+	
+	
     String createFolder(ticket, folderName, folderDesc, parentNodeRef){
-        //Convertimos los GStrings en Strings
+        //GStrings to Strings
         String fName = folderName.toString()
         String fDesc = folderDesc.toString()
 
@@ -291,7 +299,7 @@ ID:"${userID}"
     }
 
     /**
-     * Modifica el nombre de usuario.
+     * Change username
      **/
     def editUser(ticket,userName, newUserName){
         Map<QName,Serializable> props = new HashMap<QName,Serializable>()
@@ -304,7 +312,7 @@ ID:"${userID}"
 
 
     /**
-     * Añade al usuario al grupo indicado.
+     * Add a user to a group
      */
     def addUserToGroup(ticket,userName,groupName, createGroupIfNotExists = false){
         NodeRef usr = getUser(ticket,userName)
@@ -314,7 +322,7 @@ ID:"${userID}"
         }
     }
     /**
-    Crea un usuario a partir de los parámetros.
+    /* Create a new user and put in in a new group
      **/
     String createUser(ticket, userName, password, groupName, createGroupIfNotExists = false){        
         NodeRef usr = getUser(ticket,userName)
@@ -326,7 +334,7 @@ ID:"${userID}"
             addUserToGroup(ticket,userName,groupName,createGroupIfNotExists)
         }
         else{     
-            throw new AlfrescoIntegrationException("Ya existe un usuario con nombre \"${userName}\": ${usr}")
+            throw new AlfrescoIntegrationException("Username already existing \"${userName}\": ${usr}")
         }
         return usr
     }
@@ -343,7 +351,7 @@ ID:"${userID}"
         }
     }
     /**
-    Elimina el usuario identificado por su userName
+    /* delete the user
      **/
     void deleteUser(ticket, userName, deleteHome=true){
         NodeRef usr = getUser(ticket,userName)
@@ -367,12 +375,12 @@ ID:"${userID}"
     }
 
     // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    // PRIVADOS
+    // PRIVATE
     // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
     /**
-    Carga el usuario o devuelve null.
+    /* Find the user
      **/
     private NodeRef getUser(ticket,userName){
         NodeRef usr
@@ -386,8 +394,7 @@ ID:"${userID}"
     }
 
     /**
-    Obtiene el grupo, y si no existe lo crea en caso de que
-    el último parámetro sea true.
+    /* Gets the group "groupName", and if it does not exits and "create"=true, then create a new one
      **/
     private NodeRef getGroup(ticket,groupName,create){
         NodeRef grp
