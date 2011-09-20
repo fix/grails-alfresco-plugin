@@ -50,15 +50,15 @@ you can use famfamfam plugin to render it nicely. As an example here are my cust
 }
 
 .openNode {
-	list-style-image: url('/RIP/plugins/famfamfam-1.0.1/images/icons/folder.png')
+	list-style-image: url('/projectname/plugins/famfamfam-1.0.1/images/icons/folder.png')
 }
 
 .closedNode {
-	list-style-image: url('/RIP/plugins/famfamfam-1.0.1/images/icons/folder.png')
+	list-style-image: url('/projectname/plugins/famfamfam-1.0.1/images/icons/folder.png')
 }
 
 .file {
-	list-style-image: url('/RIP/plugins/famfamfam-1.0.1/images/icons/page.png')
+	list-style-image: url('/projectname/plugins/famfamfam-1.0.1/images/icons/page.png')
 }
 
 ```
@@ -67,7 +67,6 @@ you can use famfamfam plugin to render it nicely. As an example here are my cust
 TODO
 
 ## Roadmap
-* Move AlfrescoServer to a non static context, to allow several instances concurrently
 * Create a default css to style the tree (using famfamfam plugin?)
 * Separate rendering of the Workflow from the Tree
 * Create a document view/taglib
