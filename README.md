@@ -28,7 +28,7 @@ You can use also `<alfresco:homeTree username="registered_username" servername="
 Basically when you use the taglib, it will try to use the ticket stored in the AlfrescoServer Instance. If not valid, it will open a new session and save the new ticket in the AlfrescoServer Instance again.
 
 ## CSS Considerations
-The taglib renders the node as a tree using <ul> <li> tags. There are 3 classes in order to customize tree styling:
+The taglib renders the node as a tree using \<ul\> \<li\> tags. There are 3 classes in order to customize tree styling:
 
 * `<li class="file">` rendering a file in the tree
 * `<li class="closedNode">` rendering a closed folder in the tree
