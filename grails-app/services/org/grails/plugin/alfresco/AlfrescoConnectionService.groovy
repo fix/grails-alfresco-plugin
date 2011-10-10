@@ -1,3 +1,4 @@
+package org.grails.plugin.alfresco
 class AlfrescoConnectionService {
 
     private static AlfrescoServer currentInstance

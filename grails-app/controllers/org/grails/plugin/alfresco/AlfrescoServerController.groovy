@@ -1,3 +1,4 @@
+package org.grails.plugin.alfresco
 
 
 class AlfrescoServerController {

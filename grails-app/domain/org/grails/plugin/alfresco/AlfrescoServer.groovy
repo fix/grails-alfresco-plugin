@@ -1,3 +1,4 @@
+package org.grails.plugin.alfresco
 /**
  * El plugin soporta varias instalaciones de Alfresco.
  * Por defecto, al buscar un servidor consultará las entidades

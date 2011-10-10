@@ -1,3 +1,4 @@
+package org.grails.plugin.alfresco
 import org.alfresco.model.*
 import es.ineco.grails.alfresco.*;
 

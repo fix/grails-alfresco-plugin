@@ -1,3 +1,4 @@
+package org.grails.plugin.alfresco
 import org.alfresco.service.cmr.workflow.WorkflowTaskState
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.repository.NodeRef

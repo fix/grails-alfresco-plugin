@@ -1,3 +1,4 @@
+package org.grails.plugin.alfresco
 import es.ineco.grails.alfresco.*
 import org.alfresco.service.namespace.*
 import org.alfresco.service.cmr.repository.*
@@ -9,7 +10,7 @@ class AlfrescoWorkflowController {
     
     
     /**
-    Envía la señal para ejecutar la transición elegida.
+    Envï¿½a la seï¿½al para ejecutar la transiciï¿½n elegida.
     **/
     def signal = {    	
     	if(params.pathId && params.transitionId && params.ticket && params.nextUrl){
@@ -23,7 +24,7 @@ class AlfrescoWorkflowController {
     }
     
     /**
-    Comienza la ejecución del workflow
+    Comienza la ejecuciï¿½n del workflow
     **/
     def startWorkflow = {
     	//flash.message = "${params}"

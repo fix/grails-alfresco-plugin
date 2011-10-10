@@ -1,3 +1,4 @@
+package org.grails.plugin.alfresco
 import com.rivetlogic.core.cma.api.AuthenticationService;
 
 import org.alfresco.model.ContentModel;
@@ -52,6 +53,7 @@ class AlfrescoUsersService {
 				authenticationService.validate(ticket)
 			}
 			catch(Exception e){
+				e.printStackTrace()
 				//Ticket not valid then we will create and save a new one
 				ticket=null
 			}
