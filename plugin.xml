@@ -1,4 +1,4 @@
-<plugin name='alfresco' version='0.5' grailsVersion='1.3 &gt; *'>
+<plugin name='alfresco' version='0.6' grailsVersion='1.3 &gt; *'>
   <author>INECO-TIFSA, Francois-Xavier Thoorens</author>
   <authorEmail>fx.thoorens@gmail.com</authorEmail>
   <title>Plugin to integrate alfresco 3.4 into your grails application</title>
@@ -12,13 +12,13 @@ It is based on the original alfresco grails plugin, but considerably updated to 
     <resource>Config</resource>
     <resource>DataSource</resource>
     <resource>UrlMappings</resource>
-    <resource>AlfrescoServerController</resource>
-    <resource>AlfrescoWorkflowController</resource>
-    <resource>AlfrescoServer</resource>
-    <resource>AlfrescoConnectionService</resource>
-    <resource>AlfrescoUsersService</resource>
-    <resource>AlfrescoWorkflowService</resource>
-    <resource>AlfrescoTagLib</resource>
+    <resource>org.grails.plugin.alfresco.AlfrescoServerController</resource>
+    <resource>org.grails.plugin.alfresco.AlfrescoWorkflowController</resource>
+    <resource>org.grails.plugin.alfresco.AlfrescoServer</resource>
+    <resource>org.grails.plugin.alfresco.AlfrescoConnectionService</resource>
+    <resource>org.grails.plugin.alfresco.AlfrescoUsersService</resource>
+    <resource>org.grails.plugin.alfresco.AlfrescoWorkflowService</resource>
+    <resource>org.grails.plugin.alfresco.AlfrescoTagLib</resource>
   </resources>
   <dependencies />
   <behavior />
