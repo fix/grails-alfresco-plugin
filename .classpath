@@ -7,17 +7,17 @@
 	<classpathentry kind="src" path="grails-app/taglib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="com.springsource.sts.grails.core.CLASSPATH_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/alfresco-data-model-3.4.0-C.jar"/>
 	<classpathentry kind="lib" path="lib/base64-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/castor-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/cma-alfresco-3.4.0-C-0.jar"/>
 	<classpathentry kind="lib" path="lib/cma-api-3.4.0-C-0.jar"/>
+	<classpathentry kind="lib" path="lib/cma-impl-3.4.0-C-0.jar"/>
+	<classpathentry kind="lib" path="lib/cma-alfresco-3.4.0-C-0.jar"/>
+	<classpathentry kind="lib" path="lib/alfresco-data-model-3.4.0-C.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-httpclient-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jdom-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jta-1.0.1B.jar"/>
-	<classpathentry kind="lib" path="lib/cma-impl-3.4.0-C-0.jar"/>
 	<classpathentry kind="lib" path="lib/alfresco-core-3.4.b.jar"/>
 	<classpathentry kind="lib" path="lib/alfresco-repository-3.4.b.jar"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>

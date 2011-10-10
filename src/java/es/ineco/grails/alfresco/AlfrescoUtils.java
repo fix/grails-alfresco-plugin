@@ -4,7 +4,6 @@
  */
 package es.ineco.grails.alfresco;
 
-import com.rivetlogic.core.cma.api.SecurityService;
 import com.rivetlogic.core.cma.repo.*;
 import java.util.ArrayList;
 import java.util.*;
