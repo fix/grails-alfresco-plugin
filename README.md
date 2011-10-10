@@ -1,13 +1,10 @@
 This plugin will hopefully help you to integrate Alfresco 3.4 into your grails Application. Note that I have tested it only to integrate repository documents.
 Also i commit to sustain the plugin until the end of my project (middle 2012). After, future is unclear. Don't hesistate to collaborate.
 
-
-As of now, the plugin as committed does not work. I am doing the necessary modifications to have it working out of the scope of my project. Stay tuned.
-
 ## Introduction
 In order to install the plugin do
 
-    grails install-plugin alfresco-grails //TODO provide definitive link, this one does not work yet
+    grails install-plugin https://github.com/fix/grails-alfresco-plugin/raw/master/grails-alfresco-0.5.zip //TODO provide registered link later
 
 ## Alfresco server configuration
 The plugin is using Remote Alfresco API rivet (http://wiki.rivetlogic.com/display/RAAR/Home) to communicate with Alfresco. To enable it on your Alfresco, you need to deploy the amp file downloaded from here: http://wiki.rivetlogic.com/display/RAAR/Downloads. Choose the version according to your server installation (Community or Enterprise).
