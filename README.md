@@ -4,7 +4,7 @@ Also i commit to sustain the plugin until the end of my project (middle 2012). A
 ## Introduction
 In order to install the plugin do
 
-    grails install-plugin https://github.com/fix/grails-alfresco-plugin/raw/master/grails-alfresco-0.5.zip //TODO provide registered link later
+    grails install-plugin https://github.com/fix/grails-alfresco-plugin/raw/master/grails-alfresco-0.6.zip
 
 ## Alfresco server configuration
 The plugin is using Remote Alfresco API rivet (http://wiki.rivetlogic.com/display/RAAR/Home) to communicate with Alfresco. To enable it on your Alfresco, you need to deploy the amp file downloaded from here: http://wiki.rivetlogic.com/display/RAAR/Downloads. Choose the version according to your server installation (Community or Enterprise).
