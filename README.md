@@ -16,10 +16,11 @@ The plugin is using Remote Alfresco API rivet (http://wiki.rivetlogic.com/displa
 After the installation, you can create an `AlfrescoServer` connector on `http://host:port/myapp/alfrescoServer`.
 You can create several `AlfrescoServer`s pointing on the same url with different username/password settings. The most important thing is to give a unique pair name/username. For instance you can have several servers with the same name, but with different usernames.
 
-As soon as done, you can use the tag lib `<alfresco:spaceTree username="registered_username" servername="registered_name" node="workspace://StoresSpace/your-node">` to render the folders and documents inside the node `your-node`. Of course the rendering depends on the right of the username on the server.
-Be sure that the `registered_username` and `registered_name` match an existing `AlfrescoServer`, otherwise you will have an error similar to `can't get ticket on a null object`.
-You can use also `<alfresco:homeTree username="registered_username" servername="registered_name">` to render personal repository of `registered_username`.
+As soon as done, you can use the tag lib `<alfresco:spaceTree username="registered_username" servername="registered_name" node="workspace://StoresSpace/your-node">` to render the folders and documents inside the node `your-node`. Of course the rendering depends on the rights of the username on the server.
 
+Be sure that the `registered_username` and `registered_name` match an existing `AlfrescoServer`, otherwise you will have an error similar to `can't get ticket on a null object`.
+
+You can use also `<alfresco:homeTree username="registered_username" servername="registered_name">` to render personal repository of `registered_username`.
 
 ## How it works
 Basically when you use the taglib, it will try to use the ticket stored in the AlfrescoServer Instance. If not valid, it will open a new session and save the new ticket in the AlfrescoServer Instance again.
